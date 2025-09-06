@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+  <meta charset="UTF-8">
+  <title>بحث الأسماء</title>
+  <style>
+    body { font-family: Arial; direction: rtl; text-align: center; }
+    .row { display: flex; justify-content: center; margin: 10px 0; gap: 10px; }
+    input { padding: 8px; font-size: 16px; }
+    #F { display: block; margin: 10px auto; }
+    button { padding: 10px 20px; font-size: 16px; cursor: pointer; }
+  </style>
+</head>
+<body>
+  <h2>بحث البيانات</h2>
+  
+  <input type="text" id="nameInput" placeholder="اكتب الاسم هنا">
+  <div id="suggestions" style="border:1px solid #ccc; max-width:300px; margin:auto;"></div>
+  
+  <div class="row">
+    <input type="text" id="B" placeholder="B" readonly>
+    <input type="text" id="D" placeholder="D" readonly>
+    <input type="text" id="E" placeholder="E" readonly>
+  </div>
+  
+  <input type="text" id="F" placeholder="F" readonly>
+  
+  <button id="searchBtn">بحث</button>
+
+  <script>
+    let allNames = []; // هيتملوا من الـ API
+    const nameInput = document.getElementById("nameInput");
+    const suggestionsBox = document.getElementById("suggestions");
+
+    // جلب الأسماء أول ما الصفحة تفتح
+    fetch("https://your-cloudflare-worker-url/getNames")
+      .then(res => res.json())
+      .then(data => allNames = data);
+
+    // إظهار الاقتراحات أثناء الكتابة
+    nameInput.addEventListener("input", () => {
+      const val = nameInput.value.toLowerCase();
+      suggestionsBox.innerHTML = "";
+      if (!val) return;
+      const matches = allNames.filter(n => n.toLowerCase().includes(val));
+      matches.forEach(name => {
+        const div = document.createElement("div");
+        div.textContent = name;
+        div.style.cursor = "pointer";
+        div.onclick = () => {
+          nameInput.value = name;
+          suggestionsBox.innerHTML = "";
+        };
+        suggestionsBox.appendChild(div);
+      });
+    });
+
+    // عند الضغط على زر بحث
+    document.getElementById("searchBtn").onclick = () => {
+      const name = nameInput.value.trim();
+      if (!allNames.includes(name)) {
+        alert("❌ يرجى اختيار الاسم من الاقتراحات");
+        return;
+      }
+      fetch("https://your-cloudflare-worker-url/getData?name=" + encodeURIComponent(name))
+        .then(res => res.json())
+        .then(data => {
+          document.getElementById("B").value = data.B || "";
+          document.getElementById("D").value = data.D || "";
+          document.getElementById("E").value = data.E || "";
+          document.getElementById("F").value = data.F || "";
+        });
+    };
+  </script>
+</body>
+</html>
