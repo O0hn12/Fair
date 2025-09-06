@@ -103,9 +103,8 @@
     flex: 1;
     text-align: right;
     font-weight: bold;
-    color: #444;
+    color: #fff;
     margin-left: 10px;
-    background: #f9f9f9;
     padding: 8px;
     border-radius: 8px;
   }
@@ -116,11 +115,16 @@
     align-items: center;
     text-align: center;
     min-height: 45px;
-    border: 1px solid #ddd;
     border-radius: 8px;
-    background: #fff;
     font-size: 16px;
+    font-weight: bold;
+    color: #fff;
   }
+
+  /* الألوان */
+  .blue { background: #4da6ff; }
+  .red { background: #ff4d4d; }
+  .green { background: #28a745; }
 
   @media (max-width: 480px) {
     h2 { font-size: 20px; }
@@ -165,20 +169,20 @@
       <!-- النتائج -->
       <div class="results">
         <div class="result-row">
-          <span class="label">الحضور + الواجب</span>
-          <div id="B" class="result-item">—</div>
+          <span class="label blue">الحضور + الواجب</span>
+          <div id="B" class="result-item blue">—</div>
         </div>
         <div class="result-row">
-          <span class="label">التفاعل + الهدوء</span>
-          <div id="D" class="result-item">—</div>
+          <span class="label blue">التفاعل + الهدوء</span>
+          <div id="D" class="result-item blue">—</div>
         </div>
         <div class="result-row">
-          <span class="label">الـ Minus</span>
-          <div id="E" class="result-item">—</div>
+          <span class="label red">الـ Minus</span>
+          <div id="E" class="result-item red">—</div>
         </div>
         <div class="result-row">
-          <span class="label">المجموع</span>
-          <div id="F" class="result-item">—</div>
+          <span class="label green">المجموع</span>
+          <div id="F" class="result-item green">—</div>
         </div>
       </div>
     </div>
