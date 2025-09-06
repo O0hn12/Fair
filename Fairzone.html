@@ -131,11 +131,13 @@
   .red { background: #ff4d4d; }
   .green { background: #28a745; }
 
-  @media (max-width: 480px) {
-    h2 { font-size: 22px; }
-    input, button, .class-box { font-size: 16px; padding: 12px; }
-    .label { font-size: 16px; }
-    .result-item { font-size: 16px; }
+  /* تحسين للموبايل (Portrait) */
+  @media (max-width: 768px) and (orientation: portrait) {
+    .container { max-width: 95%; padding: 30px 15px; }
+    h2 { font-size: 26px; }
+    input, button, .class-box { font-size: 20px; padding: 16px; }
+    .label { font-size: 20px; }
+    .result-item { font-size: 20px; min-height: 60px; }
   }
 </style>
 </head>
