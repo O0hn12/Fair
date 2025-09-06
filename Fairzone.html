@@ -133,7 +133,8 @@
   </div>
 
 <script>
-const API_URL = "https://fairzone.johnmamdouh777.workers.dev/"; // عدلها باللينك بتاعك
+<script>
+const API_URL = "https://fairzone.johnmamdouh777.workers.dev/"; 
 let allNames = [];
 let selectedSheet = "";
 
@@ -159,74 +160,38 @@ function selectClass(sheet) {
   fetch(`${API_URL}?action=getNames&sheet=${encodeURIComponent(selectedSheet)}`)
     .then(res => res.json())
     .then(data => {
-      allNames = data;
+      allNames = data.names || []; // ✅ لازم ناخد الـ array بس
       console.log("Names loaded:", allNames.length);
     });
 }
 
 // اقتراحات أثناء الكتابة
-document.getElementById("nameInput").addEventListener("input", function() {
-  const val = this.value.toLowerCase();
+function showSuggestions(value) {
   const suggestions = document.getElementById("suggestions");
   suggestions.innerHTML = "";
-  if (val && allNames.length > 0) {
-    const filtered = allNames.filter(n => n.toLowerCase().includes(val)).slice(0, 5);
-    filtered.forEach(n => {
-      const div = document.createElement("div");
-      div.textContent = n;
-      div.onclick = () => {
-        document.getElementById("nameInput").value = n;
-        suggestions.innerHTML = "";
-      };
-      suggestions.appendChild(div);
-    });
-  }
-});
 
-  async function loadNames() {
-  try {
-    const res = await fetch(`${API_BASE}/?action=getNames&sheet=1ب`);
-    const data = await res.json();
-    console.log("Names loaded:", data);
-    allNames = data.names || [];
-  } catch (err) {
-    console.error("Error loading names:", err);
-    allNames = [];
-  }
+  if (!value || allNames.length === 0) return;
+
+  const filtered = allNames.filter(n => 
+    n.toLowerCase().includes(value.toLowerCase())
+  ).slice(0, 5);
+
+  filtered.forEach(n => {
+    const div = document.createElement("div");
+    div.textContent = n;
+    div.onclick = () => {
+      document.getElementById("nameInput").value = n;
+      suggestions.innerHTML = "";
+    };
+    suggestions.appendChild(div);
+  });
 }
 
-  function showSuggestions(value) {
-    const suggestions = document.getElementById("suggestions");
-    suggestions.innerHTML = ""; // امسح القديم
+// ربط الكتابة بالاقتراحات
+document.getElementById("nameInput").addEventListener("input", e => {
+  showSuggestions(e.target.value);
+});
 
-    if (!value) return; // لو مفيش كتابة → مفيش اقتراحات
-
-    // فلترة الأسماء اللي فيها النص المكتوب
-    const filtered = allNames.filter(name =>
-      name.toLowerCase().includes(value.toLowerCase())
-    );
-
-    // إنشاء عناصر الاقتراحات
-    filtered.forEach(name => {
-      const div = document.createElement("div");
-      div.textContent = name;
-      div.style.padding = "8px";
-      div.style.cursor = "pointer";
-      div.onclick = () => {
-        document.getElementById("nameInput").value = name;
-        suggestions.innerHTML = ""; // امسح الليستة
-      };
-      suggestions.appendChild(div);
-    });
-  }
-
-  // ربط الكتابة بالدالة
-  document.getElementById("nameInput").addEventListener("input", e => {
-    showSuggestions(e.target.value);
-  });
-
-  // تحميل الأسماء عند فتح الصفحة
-  loadNames();
 // البحث
 function search() {
   const name = document.getElementById("nameInput").value;
@@ -234,6 +199,7 @@ function search() {
     alert("❌ يرجى اختيار الاسم من الاقتراحات");
     return;
   }
+
   fetch(`${API_URL}?action=getData&sheet=${encodeURIComponent(selectedSheet)}&name=${encodeURIComponent(name)}`)
     .then(res => res.json())
     .then(data => {
@@ -244,5 +210,3 @@ function search() {
     });
 }
 </script>
-</body>
-</html>
