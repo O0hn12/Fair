@@ -185,6 +185,9 @@
           <div id="F" class="result-item green">—</div>
         </div>
       </div>
+      <button onclick="goBack()" class="bg-gray-600 text-white py-2 px-4 rounded-lg hover:bg-gray-700 mt-6">
+    ⬅ رجوع
+  </button>
     </div>
   </div>
 
@@ -271,6 +274,10 @@ function search() {
       console.error("Error fetching data:", err);
     });
 }
+  function goBack() {
+  history.back();
+}
+
 </script>
 </body>
 </html>
