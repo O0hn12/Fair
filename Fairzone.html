@@ -87,20 +87,37 @@
     background: #eee;
   }
 
-  /* ✅ مربعات النتائج */
+  /* تنسيقات النتائج */
   .results {
-    margin-top: 15px;
+    margin-top: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+  .result-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .label {
+    flex: 1;
+    text-align: right;
+    font-weight: bold;
+    color: #444;
+    margin-left: 10px;
+    background: #f9f9f9;
+    padding: 8px;
+    border-radius: 8px;
   }
   .result-item {
+    flex: 1.5;
     display: flex;
-    justify-content: center;   /* يوسّط أفقياً */
-    align-items: center;       /* يوسّط عمودياً */
+    justify-content: center;
+    align-items: center;
     text-align: center;
-    min-height: 50px;
+    min-height: 45px;
     border: 1px solid #ddd;
     border-radius: 8px;
-    margin: 5px 0;
-    padding: 10px;
     background: #fff;
     font-size: 16px;
   }
@@ -108,6 +125,8 @@
   @media (max-width: 480px) {
     h2 { font-size: 20px; }
     input, button, .class-box { font-size: 14px; padding: 10px; }
+    .label { font-size: 14px; }
+    .result-item { font-size: 14px; }
   }
 </style>
 </head>
@@ -143,12 +162,24 @@
       <div id="suggestions" class="suggestions"></div>
       <button onclick="search()">بحث</button>
 
-      <!-- ✅ مربعات النتائج -->
+      <!-- النتائج -->
       <div class="results">
-        <div id="B" class="result-item">مربع B</div>
-        <div id="D" class="result-item">مربع D</div>
-        <div id="E" class="result-item">مربع E</div>
-        <div id="F" class="result-item">مربع F</div>
+        <div class="result-row">
+          <span class="label">الحضور + الواجب</span>
+          <div id="B" class="result-item">—</div>
+        </div>
+        <div class="result-row">
+          <span class="label">التفاعل + الهدوء</span>
+          <div id="D" class="result-item">—</div>
+        </div>
+        <div class="result-row">
+          <span class="label">الـ Minus</span>
+          <div id="E" class="result-item">—</div>
+        </div>
+        <div class="result-row">
+          <span class="label">المجموع</span>
+          <div id="F" class="result-item">—</div>
+        </div>
       </div>
     </div>
   </div>
