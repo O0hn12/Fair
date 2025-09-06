@@ -4,6 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>مغامرة الأبطال</title>
+<link rel="icon" type="image/png" href="https://i.ibb.co/FbfJxWvn/logo.png">
 <style>
   body {
     margin: 0;
@@ -18,7 +19,7 @@
     min-height: 100vh;
   }
   .container {
-    background: rgba(255, 255, 255, 0.9);
+    background: rgba(255, 255, 255, 0.95);
     padding: 25px;
     border-radius: 15px;
     max-width: 400px;
@@ -26,8 +27,19 @@
     text-align: center;
     box-shadow: 0 4px 15px rgba(0,0,0,0.2);
   }
+  .logo-title {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 15px;
+  }
+  .logo-title img {
+    width: 35px;
+    height: 35px;
+    margin-left: 10px;
+  }
   h2 {
-    margin-bottom: 20px;
+    margin: 0;
     color: #333;
   }
   input, button, .class-box {
@@ -63,6 +75,9 @@
     max-height: 150px;
     overflow-y: auto;
     margin-top: -5px;
+    position: relative;
+    z-index: 999;
+    text-align: right;
   }
   .suggestions div {
     padding: 8px;
@@ -79,9 +94,13 @@
 </head>
 <body>
   <div class="container" id="app">
+    <div class="logo-title">
+      <img src="https://i.ibb.co/FbfJxWvn/logo.png" alt="logo">
+      <h2>مغامرة الأبطال</h2>
+    </div>
+
     <!-- الصفحة الأولى (تسجيل الدخول) -->
     <div id="loginPage">
-      <h2>تسجيل الدخول</h2>
       <input type="text" id="username" placeholder="اسم المستخدم">
       <input type="password" id="password" placeholder="كلمة المرور">
       <button onclick="login()">دخول</button>
@@ -114,7 +133,7 @@
   </div>
 
 <script>
-const API_URL = "https://your-cloudflare-worker-url"; // عدلها باللينك بتاعك
+const API_URL = "https://fairzone.johnmamdouh777.workers.dev/"; // عدلها باللينك بتاعك
 let allNames = [];
 let selectedSheet = "";
 
@@ -122,7 +141,7 @@ let selectedSheet = "";
 function login() {
   const u = document.getElementById("username").value;
   const p = document.getElementById("password").value;
-  if (u === "admin" && p === "1234") {
+  if (u === "admin" && p === "123") {
     document.getElementById("loginPage").style.display = "none";
     document.getElementById("classPage").style.display = "block";
   } else {
@@ -139,7 +158,10 @@ function selectClass(sheet) {
   // تحميل الأسماء
   fetch(`${API_URL}?action=getNames&sheet=${encodeURIComponent(selectedSheet)}`)
     .then(res => res.json())
-    .then(data => allNames = data);
+    .then(data => {
+      allNames = data;
+      console.log("Names loaded:", allNames.length);
+    });
 }
 
 // اقتراحات أثناء الكتابة
@@ -147,7 +169,7 @@ document.getElementById("nameInput").addEventListener("input", function() {
   const val = this.value.toLowerCase();
   const suggestions = document.getElementById("suggestions");
   suggestions.innerHTML = "";
-  if (val) {
+  if (val && allNames.length > 0) {
     const filtered = allNames.filter(n => n.toLowerCase().includes(val)).slice(0, 5);
     filtered.forEach(n => {
       const div = document.createElement("div");
