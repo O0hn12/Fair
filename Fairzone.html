@@ -134,6 +134,7 @@
 
 <script>
 <script>
+<script>
 const API_URL = "https://fairzone.johnmamdouh777.workers.dev/"; 
 let allNames = [];
 let selectedSheet = "";
@@ -160,7 +161,7 @@ function selectClass(sheet) {
   fetch(`${API_URL}?action=getNames&sheet=${encodeURIComponent(selectedSheet)}`)
     .then(res => res.json())
     .then(data => {
-      allNames = data.names || []; // ✅ لازم ناخد الـ array بس
+      allNames = data.names || []; 
       console.log("Names loaded:", allNames.length);
     });
 }
