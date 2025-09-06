@@ -2,75 +2,138 @@
 <html lang="ar">
 <head>
   <meta charset="UTF-8">
-  <title>بحث الأسماء</title>
+  <title>Heroes Adventure</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
   <style>
-    body { font-family: Arial; direction: rtl; text-align: center; }
-    .row { display: flex; justify-content: center; margin: 10px 0; gap: 10px; }
-    input { padding: 8px; font-size: 16px; }
-    #F { display: block; margin: 10px auto; }
-    button { padding: 10px 20px; font-size: 16px; cursor: pointer; }
+    body { font-family: Arial, sans-serif; direction: rtl; text-align: center; }
+    .login, .select-class, .main { display: none; margin-top: 30px; }
+    .rect { display: inline-block; padding: 20px; margin: 10px; border: 1px solid #333; cursor: pointer; border-radius: 10px; }
+    input, button { margin: 5px; padding: 10px; }
+    .fields { display: flex; justify-content: center; gap: 10px; margin-top: 10px; }
   </style>
 </head>
 <body>
-  <h2>بحث البيانات</h2>
-  
-  <input type="text" id="nameInput" placeholder="اكتب الاسم هنا">
-  <div id="suggestions" style="border:1px solid #ccc; max-width:300px; margin:auto;"></div>
-  
-  <div class="row">
-    <input type="text" id="B" placeholder="B" readonly>
-    <input type="text" id="D" placeholder="D" readonly>
-    <input type="text" id="E" placeholder="E" readonly>
+  <h1>Heroes Adventure</h1>
+
+  <!-- صفحة تسجيل الدخول -->
+  <div class="login">
+    <h2>تسجيل الدخول</h2>
+    <input type="text" id="username" placeholder="اسم المستخدم"><br>
+    <input type="password" id="password" placeholder="كلمة المرور"><br>
+    <button onclick="login()">دخول</button>
+    <p id="loginMsg"></p>
   </div>
-  
-  <input type="text" id="F" placeholder="F" readonly>
-  
-  <button id="searchBtn">بحث</button>
+
+  <!-- صفحة اختيار الفرقة -->
+  <div class="select-class">
+    <h2>اختيار الفرقة</h2>
+    <div id="classes"></div>
+  </div>
+
+  <!-- الصفحة الرئيسية -->
+  <div class="main">
+    <h2 id="sheetTitle"></h2>
+    <input type="text" id="studentName" placeholder="ادخل الاسم">
+    <div id="suggestions"></div>
+    <div class="fields">
+      <input id="fieldB" placeholder="B" readonly>
+      <input id="fieldD" placeholder="D" readonly>
+      <input id="fieldE" placeholder="E" readonly>
+    </div>
+    <div>
+      <input id="fieldF" placeholder="F" readonly>
+    </div>
+    <button onclick="searchStudent()">بحث</button>
+    <p id="msg"></p>
+  </div>
 
   <script>
-    let allNames = []; // هيتملوا من الـ API
-    const nameInput = document.getElementById("nameInput");
-    const suggestionsBox = document.getElementById("suggestions");
+    const API_URL = "https://fairzone.johnmamdouh777.workers.dev/"; // ضع رابط الكلاودفلير
 
-    // جلب الأسماء أول ما الصفحة تفتح
-    fetch("https://your-cloudflare-worker-url/getNames")
-      .then(res => res.json())
-      .then(data => allNames = data);
+    let selectedSheet = "";
+    let allNames = [];
 
-    // إظهار الاقتراحات أثناء الكتابة
-    nameInput.addEventListener("input", () => {
-      const val = nameInput.value.toLowerCase();
-      suggestionsBox.innerHTML = "";
-      if (!val) return;
-      const matches = allNames.filter(n => n.toLowerCase().includes(val));
-      matches.forEach(name => {
+    document.querySelector(".login").style.display = "block";
+
+    function login() {
+      const u = document.getElementById("username").value;
+      const p = document.getElementById("password").value;
+      if (u === "admin" && p === "1234") {
+        document.querySelector(".login").style.display = "none";
+        document.querySelector(".select-class").style.display = "block";
+        loadClasses();
+      } else {
+        document.getElementById("loginMsg").innerText = "❌ بيانات غير صحيحة";
+      }
+    }
+
+    function loadClasses() {
+      const container = document.getElementById("classes");
+      const groups = ["1ب","2ب","3ب","4ب","5ب","6ب"];
+      container.innerHTML = "";
+      groups.forEach(g => {
         const div = document.createElement("div");
-        div.textContent = name;
-        div.style.cursor = "pointer";
-        div.onclick = () => {
-          nameInput.value = name;
-          suggestionsBox.innerHTML = "";
-        };
-        suggestionsBox.appendChild(div);
+        div.className = "rect";
+        div.innerText = g;
+        div.onclick = () => selectClass(g);
+        container.appendChild(div);
       });
+    }
+
+    async function selectClass(sheet) {
+      selectedSheet = sheet;
+      document.querySelector(".select-class").style.display = "none";
+      document.querySelector(".main").style.display = "block";
+      document.getElementById("sheetTitle").innerText = "الفرقة: " + sheet;
+
+      const res = await fetch(API_URL, {
+        method: "POST",
+        body: JSON.stringify({ action: "getNames", sheet })
+      });
+      allNames = await res.json();
+    }
+
+    function showSuggestions(val) {
+      const suggBox = document.getElementById("suggestions");
+      suggBox.innerHTML = "";
+      if (!val) return;
+      const matches = allNames.filter(n => n.includes(val));
+      matches.forEach(m => {
+        const div = document.createElement("div");
+        div.innerText = m;
+        div.onclick = () => {
+          document.getElementById("studentName").value = m;
+          suggBox.innerHTML = "";
+        };
+        suggBox.appendChild(div);
+      });
+    }
+
+    document.getElementById("studentName").addEventListener("input", (e) => {
+      showSuggestions(e.target.value.trim());
     });
 
-    // عند الضغط على زر بحث
-    document.getElementById("searchBtn").onclick = () => {
-      const name = nameInput.value.trim();
+    async function searchStudent() {
+      const name = document.getElementById("studentName").value.trim();
       if (!allNames.includes(name)) {
-        alert("❌ يرجى اختيار الاسم من الاقتراحات");
+        document.getElementById("msg").innerText = "❌ يرجى اختيار الاسم من الاقتراحات";
         return;
       }
-      fetch("https://your-cloudflare-worker-url/getData?name=" + encodeURIComponent(name))
-        .then(res => res.json())
-        .then(data => {
-          document.getElementById("B").value = data.B || "";
-          document.getElementById("D").value = data.D || "";
-          document.getElementById("E").value = data.E || "";
-          document.getElementById("F").value = data.F || "";
-        });
-    };
+      const res = await fetch(API_URL, {
+        method: "POST",
+        body: JSON.stringify({ action: "getStudentData", sheet: selectedSheet, name })
+      });
+      const data = await res.json();
+      if (data.error) {
+        document.getElementById("msg").innerText = data.error;
+      } else {
+        document.getElementById("fieldB").value = data.B;
+        document.getElementById("fieldD").value = data.D;
+        document.getElementById("fieldE").value = data.E;
+        document.getElementById("fieldF").value = data.F;
+        document.getElementById("msg").innerText = "";
+      }
+    }
   </script>
 </body>
 </html>
