@@ -22,7 +22,7 @@
     background: rgba(255, 255, 255, 0.95);
     padding: 25px;
     border-radius: 15px;
-    max-width: 400px;
+    max-width: 420px;
     width: 90%;
     text-align: center;
     box-shadow: 0 4px 15px rgba(0,0,0,0.2);
@@ -34,21 +34,22 @@
     margin-bottom: 15px;
   }
   .logo-title img {
-    width: 35px;
-    height: 35px;
+    width: 40px;
+    height: 40px;
     margin-left: 10px;
   }
   h2 {
     margin: 0;
     color: #333;
+    font-size: 24px;
   }
   input, button, .class-box {
     width: 100%;
-    padding: 12px;
-    margin: 8px 0;
+    padding: 14px;
+    margin: 10px 0;
     border: none;
     border-radius: 8px;
-    font-size: 16px;
+    font-size: 18px;
   }
   input {
     border: 1px solid #ccc;
@@ -57,6 +58,7 @@
     background: #007BFF;
     color: white;
     cursor: pointer;
+    font-weight: bold;
   }
   button:hover {
     background: #0056b3;
@@ -64,6 +66,7 @@
   .class-box {
     background: #f0f0f0;
     cursor: pointer;
+    font-weight: bold;
   }
   .class-box:hover {
     background: #ddd;
@@ -78,9 +81,10 @@
     position: relative;
     z-index: 999;
     text-align: right;
+    font-size: 16px;
   }
   .suggestions div {
-    padding: 8px;
+    padding: 10px;
     cursor: pointer;
   }
   .suggestions div:hover {
@@ -92,7 +96,7 @@
     margin-top: 20px;
     display: flex;
     flex-direction: column;
-    gap: 12px;
+    gap: 14px;
   }
   .result-row {
     display: flex;
@@ -105,8 +109,9 @@
     font-weight: bold;
     color: #fff;
     margin-left: 10px;
-    padding: 8px;
+    padding: 10px;
     border-radius: 8px;
+    font-size: 18px;
   }
   .result-item {
     flex: 1.5;
@@ -114,9 +119,9 @@
     justify-content: center;
     align-items: center;
     text-align: center;
-    min-height: 45px;
+    min-height: 50px;
     border-radius: 8px;
-    font-size: 16px;
+    font-size: 18px;
     font-weight: bold;
     color: #fff;
   }
@@ -127,10 +132,10 @@
   .green { background: #28a745; }
 
   @media (max-width: 480px) {
-    h2 { font-size: 20px; }
-    input, button, .class-box { font-size: 14px; padding: 10px; }
-    .label { font-size: 14px; }
-    .result-item { font-size: 14px; }
+    h2 { font-size: 22px; }
+    input, button, .class-box { font-size: 16px; padding: 12px; }
+    .label { font-size: 16px; }
+    .result-item { font-size: 16px; }
   }
 </style>
 </head>
@@ -185,9 +190,7 @@
           <div id="F" class="result-item green">—</div>
         </div>
       </div>
-      <button onclick="goBack()" class="bg-gray-600 text-white py-2 px-4 rounded-lg hover:bg-gray-700 mt-6">
-    ⬅ رجوع
-  </button>
+      <button onclick="goBack()">⬅ رجوع</button>
     </div>
   </div>
 
@@ -274,10 +277,17 @@ function search() {
       console.error("Error fetching data:", err);
     });
 }
-  function goBack() {
-  history.back();
-}
 
+// زر الرجوع الداخلي
+function goBack() {
+  if (document.getElementById("searchPage").style.display === "block") {
+    document.getElementById("searchPage").style.display = "none";
+    document.getElementById("classPage").style.display = "block";
+  } else if (document.getElementById("classPage").style.display === "block") {
+    document.getElementById("classPage").style.display = "none";
+    document.getElementById("loginPage").style.display = "block";
+  }
+}
 </script>
 </body>
 </html>
