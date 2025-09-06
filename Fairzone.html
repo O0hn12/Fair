@@ -183,6 +183,50 @@ document.getElementById("nameInput").addEventListener("input", function() {
   }
 });
 
+  async function loadNames() {
+  try {
+    const res = await fetch(`${API_BASE}/?action=getNames&sheet=1ب`);
+    const data = await res.json();
+    console.log("Names loaded:", data);
+    allNames = data.names || [];
+  } catch (err) {
+    console.error("Error loading names:", err);
+    allNames = [];
+  }
+}
+
+  function showSuggestions(value) {
+    const suggestions = document.getElementById("suggestions");
+    suggestions.innerHTML = ""; // امسح القديم
+
+    if (!value) return; // لو مفيش كتابة → مفيش اقتراحات
+
+    // فلترة الأسماء اللي فيها النص المكتوب
+    const filtered = allNames.filter(name =>
+      name.toLowerCase().includes(value.toLowerCase())
+    );
+
+    // إنشاء عناصر الاقتراحات
+    filtered.forEach(name => {
+      const div = document.createElement("div");
+      div.textContent = name;
+      div.style.padding = "8px";
+      div.style.cursor = "pointer";
+      div.onclick = () => {
+        document.getElementById("nameInput").value = name;
+        suggestions.innerHTML = ""; // امسح الليستة
+      };
+      suggestions.appendChild(div);
+    });
+  }
+
+  // ربط الكتابة بالدالة
+  document.getElementById("nameInput").addEventListener("input", e => {
+    showSuggestions(e.target.value);
+  });
+
+  // تحميل الأسماء عند فتح الصفحة
+  loadNames();
 // البحث
 function search() {
   const name = document.getElementById("nameInput").value;
