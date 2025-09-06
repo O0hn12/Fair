@@ -1,139 +1,182 @@
 <!DOCTYPE html>
 <html lang="ar">
 <head>
-  <meta charset="UTF-8">
-  <title>Heroes Adventure</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <style>
-    body { font-family: Arial, sans-serif; direction: rtl; text-align: center; }
-    .login, .select-class, .main { display: none; margin-top: 30px; }
-    .rect { display: inline-block; padding: 20px; margin: 10px; border: 1px solid #333; cursor: pointer; border-radius: 10px; }
-    input, button { margin: 5px; padding: 10px; }
-    .fields { display: flex; justify-content: center; gap: 10px; margin-top: 10px; }
-  </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>مغامرة الأبطال</title>
+<style>
+  body {
+    margin: 0;
+    padding: 0;
+    font-family: "Cairo", sans-serif;
+    direction: rtl;
+    background: url("https://i.ibb.co/FbfJxWvn/logo.png") no-repeat center center fixed;
+    background-size: cover;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+  }
+  .container {
+    background: rgba(255, 255, 255, 0.9);
+    padding: 25px;
+    border-radius: 15px;
+    max-width: 400px;
+    width: 90%;
+    text-align: center;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+  }
+  h2 {
+    margin-bottom: 20px;
+    color: #333;
+  }
+  input, button, .class-box {
+    width: 100%;
+    padding: 12px;
+    margin: 8px 0;
+    border: none;
+    border-radius: 8px;
+    font-size: 16px;
+  }
+  input {
+    border: 1px solid #ccc;
+  }
+  button {
+    background: #007BFF;
+    color: white;
+    cursor: pointer;
+  }
+  button:hover {
+    background: #0056b3;
+  }
+  .class-box {
+    background: #f0f0f0;
+    cursor: pointer;
+  }
+  .class-box:hover {
+    background: #ddd;
+  }
+  .suggestions {
+    background: #fff;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    max-height: 150px;
+    overflow-y: auto;
+    margin-top: -5px;
+  }
+  .suggestions div {
+    padding: 8px;
+    cursor: pointer;
+  }
+  .suggestions div:hover {
+    background: #eee;
+  }
+  @media (max-width: 480px) {
+    h2 { font-size: 20px; }
+    input, button, .class-box { font-size: 14px; padding: 10px; }
+  }
+</style>
 </head>
 <body>
-  <h1>Heroes Adventure</h1>
-
-  <!-- صفحة تسجيل الدخول -->
-  <div class="login">
-    <h2>تسجيل الدخول</h2>
-    <input type="text" id="username" placeholder="اسم المستخدم"><br>
-    <input type="password" id="password" placeholder="كلمة المرور"><br>
-    <button onclick="login()">دخول</button>
-    <p id="loginMsg"></p>
-  </div>
-
-  <!-- صفحة اختيار الفرقة -->
-  <div class="select-class">
-    <h2>اختيار الفرقة</h2>
-    <div id="classes"></div>
-  </div>
-
-  <!-- الصفحة الرئيسية -->
-  <div class="main">
-    <h2 id="sheetTitle"></h2>
-    <input type="text" id="studentName" placeholder="ادخل الاسم">
-    <div id="suggestions"></div>
-    <div class="fields">
-      <input id="fieldB" placeholder="B" readonly>
-      <input id="fieldD" placeholder="D" readonly>
-      <input id="fieldE" placeholder="E" readonly>
+  <div class="container" id="app">
+    <!-- الصفحة الأولى (تسجيل الدخول) -->
+    <div id="loginPage">
+      <h2>تسجيل الدخول</h2>
+      <input type="text" id="username" placeholder="اسم المستخدم">
+      <input type="password" id="password" placeholder="كلمة المرور">
+      <button onclick="login()">دخول</button>
     </div>
-    <div>
-      <input id="fieldF" placeholder="F" readonly>
+
+    <!-- الصفحة الثانية (اختيار الفرقة) -->
+    <div id="classPage" style="display:none;">
+      <h2>اختر الفرقة</h2>
+      <div class="class-box" onclick="selectClass('1ب')">1ب</div>
+      <div class="class-box" onclick="selectClass('2ب')">2ب</div>
+      <div class="class-box" onclick="selectClass('3ب')">3ب</div>
+      <div class="class-box" onclick="selectClass('4ب')">4ب</div>
+      <div class="class-box" onclick="selectClass('5ب')">5ب</div>
+      <div class="class-box" onclick="selectClass('6ب')">6ب</div>
     </div>
-    <button onclick="searchStudent()">بحث</button>
-    <p id="msg"></p>
+
+    <!-- الصفحة الثالثة (البحث) -->
+    <div id="searchPage" style="display:none;">
+      <h2>البحث عن الطالب</h2>
+      <input type="text" id="nameInput" placeholder="ادخل الاسم">
+      <div id="suggestions" class="suggestions"></div>
+      <button onclick="search()">بحث</button>
+      <div>
+        <input id="B" placeholder="مربع B" readonly>
+        <input id="D" placeholder="مربع D" readonly>
+        <input id="E" placeholder="مربع E" readonly>
+        <input id="F" placeholder="مربع F" readonly>
+      </div>
+    </div>
   </div>
 
-  <script>
-    const API_URL = "https://fairzone.johnmamdouh777.workers.dev/"; // ضع رابط الكلاودفلير
+<script>
+const API_URL = "https://your-cloudflare-worker-url"; // عدلها باللينك بتاعك
+let allNames = [];
+let selectedSheet = "";
 
-    let selectedSheet = "";
-    let allNames = [];
+// تسجيل الدخول
+function login() {
+  const u = document.getElementById("username").value;
+  const p = document.getElementById("password").value;
+  if (u === "admin" && p === "1234") {
+    document.getElementById("loginPage").style.display = "none";
+    document.getElementById("classPage").style.display = "block";
+  } else {
+    alert("❌ اسم المستخدم أو كلمة المرور غير صحيحة");
+  }
+}
 
-    document.querySelector(".login").style.display = "block";
+// اختيار الفرقة
+function selectClass(sheet) {
+  selectedSheet = sheet;
+  document.getElementById("classPage").style.display = "none";
+  document.getElementById("searchPage").style.display = "block";
 
-    function login() {
-      const u = document.getElementById("username").value;
-      const p = document.getElementById("password").value;
-      if (u === "admin" && p === "1234") {
-        document.querySelector(".login").style.display = "none";
-        document.querySelector(".select-class").style.display = "block";
-        loadClasses();
-      } else {
-        document.getElementById("loginMsg").innerText = "❌ بيانات غير صحيحة";
-      }
-    }
+  // تحميل الأسماء
+  fetch(`${API_URL}?action=getNames&sheet=${encodeURIComponent(selectedSheet)}`)
+    .then(res => res.json())
+    .then(data => allNames = data);
+}
 
-    function loadClasses() {
-      const container = document.getElementById("classes");
-      const groups = ["1ب","2ب","3ب","4ب","5ب","6ب"];
-      container.innerHTML = "";
-      groups.forEach(g => {
-        const div = document.createElement("div");
-        div.className = "rect";
-        div.innerText = g;
-        div.onclick = () => selectClass(g);
-        container.appendChild(div);
-      });
-    }
-
-    async function selectClass(sheet) {
-      selectedSheet = sheet;
-      document.querySelector(".select-class").style.display = "none";
-      document.querySelector(".main").style.display = "block";
-      document.getElementById("sheetTitle").innerText = "الفرقة: " + sheet;
-
-      const res = await fetch(API_URL, {
-        method: "POST",
-        body: JSON.stringify({ action: "getNames", sheet })
-      });
-      allNames = await res.json();
-    }
-
-    function showSuggestions(val) {
-      const suggBox = document.getElementById("suggestions");
-      suggBox.innerHTML = "";
-      if (!val) return;
-      const matches = allNames.filter(n => n.includes(val));
-      matches.forEach(m => {
-        const div = document.createElement("div");
-        div.innerText = m;
-        div.onclick = () => {
-          document.getElementById("studentName").value = m;
-          suggBox.innerHTML = "";
-        };
-        suggBox.appendChild(div);
-      });
-    }
-
-    document.getElementById("studentName").addEventListener("input", (e) => {
-      showSuggestions(e.target.value.trim());
+// اقتراحات أثناء الكتابة
+document.getElementById("nameInput").addEventListener("input", function() {
+  const val = this.value.toLowerCase();
+  const suggestions = document.getElementById("suggestions");
+  suggestions.innerHTML = "";
+  if (val) {
+    const filtered = allNames.filter(n => n.toLowerCase().includes(val)).slice(0, 5);
+    filtered.forEach(n => {
+      const div = document.createElement("div");
+      div.textContent = n;
+      div.onclick = () => {
+        document.getElementById("nameInput").value = n;
+        suggestions.innerHTML = "";
+      };
+      suggestions.appendChild(div);
     });
+  }
+});
 
-    async function searchStudent() {
-      const name = document.getElementById("studentName").value.trim();
-      if (!allNames.includes(name)) {
-        document.getElementById("msg").innerText = "❌ يرجى اختيار الاسم من الاقتراحات";
-        return;
-      }
-      const res = await fetch(API_URL, {
-        method: "POST",
-        body: JSON.stringify({ action: "getStudentData", sheet: selectedSheet, name })
-      });
-      const data = await res.json();
-      if (data.error) {
-        document.getElementById("msg").innerText = data.error;
-      } else {
-        document.getElementById("fieldB").value = data.B;
-        document.getElementById("fieldD").value = data.D;
-        document.getElementById("fieldE").value = data.E;
-        document.getElementById("fieldF").value = data.F;
-        document.getElementById("msg").innerText = "";
-      }
-    }
-  </script>
+// البحث
+function search() {
+  const name = document.getElementById("nameInput").value;
+  if (!allNames.includes(name)) {
+    alert("❌ يرجى اختيار الاسم من الاقتراحات");
+    return;
+  }
+  fetch(`${API_URL}?action=getData&sheet=${encodeURIComponent(selectedSheet)}&name=${encodeURIComponent(name)}`)
+    .then(res => res.json())
+    .then(data => {
+      document.getElementById("B").value = data.B || "";
+      document.getElementById("D").value = data.D || "";
+      document.getElementById("E").value = data.E || "";
+      document.getElementById("F").value = data.F || "";
+    });
+}
+</script>
 </body>
 </html>
