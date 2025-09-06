@@ -86,6 +86,25 @@
   .suggestions div:hover {
     background: #eee;
   }
+
+  /* ✅ مربعات النتائج */
+  .results {
+    margin-top: 15px;
+  }
+  .result-item {
+    display: flex;
+    justify-content: center;   /* يوسّط أفقياً */
+    align-items: center;       /* يوسّط عمودياً */
+    text-align: center;
+    min-height: 50px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    margin: 5px 0;
+    padding: 10px;
+    background: #fff;
+    font-size: 16px;
+  }
+
   @media (max-width: 480px) {
     h2 { font-size: 20px; }
     input, button, .class-box { font-size: 14px; padding: 10px; }
@@ -123,11 +142,13 @@
       <input type="text" id="nameInput" placeholder="ادخل الاسم">
       <div id="suggestions" class="suggestions"></div>
       <button onclick="search()">بحث</button>
-      <div>
-        <input id="B" placeholder="مربع B" readonly>
-        <input id="D" placeholder="مربع D" readonly>
-        <input id="E" placeholder="مربع E" readonly>
-        <input id="F" placeholder="مربع F" readonly>
+
+      <!-- ✅ مربعات النتائج -->
+      <div class="results">
+        <div id="B" class="result-item">مربع B</div>
+        <div id="D" class="result-item">مربع D</div>
+        <div id="E" class="result-item">مربع E</div>
+        <div id="F" class="result-item">مربع F</div>
       </div>
     </div>
   </div>
@@ -206,10 +227,10 @@ function search() {
   fetch(`${API_URL}?action=getData&sheet=${encodeURIComponent(selectedSheet)}&name=${encodeURIComponent(name)}`)
     .then(res => res.json())
     .then(data => {
-      document.getElementById("B").value = data.B || "";
-      document.getElementById("D").value = data.D || "";
-      document.getElementById("E").value = data.E || "";
-      document.getElementById("F").value = data.F || "";
+      document.getElementById("B").textContent = data.B || "—";
+      document.getElementById("D").textContent = data.D || "—";
+      document.getElementById("E").textContent = data.E || "—";
+      document.getElementById("F").textContent = data.F || "—";
     })
     .catch(err => {
       console.error("Error fetching data:", err);
