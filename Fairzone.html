@@ -106,8 +106,8 @@
     <input type="text" id="editName" placeholder="ادخل الاسم">
     <div id="editSuggestions" class="suggestions"></div>
     <div style="text-align:right;">
-      <label><input type="radio" name="field" value="D"> تعديل التفاعل + الهدوء</label><br>
-      <label><input type="radio" name="field" value="E"> تعديل الـ Minus</label>
+      <label><input type="radio" name="field" value="interaction"> تعديل التفاعل + الهدوء</label><br>
+      <label><input type="radio" name="field" value="minus"> تعديل الـ Minus</label>
     </div>
     <input type="number" id="newValue" placeholder="القيمة الجديدة">
     <button onclick="editData()">تعديل</button>
@@ -119,7 +119,7 @@
 const API_URL = "https://fairzone.johnmamdouh777.workers.dev/"; 
 let allNames = [];
 let selectedSheet = "";
-let mode = "view"; // view | edit
+let mode = "view";
 
 // تسجيل الدخول
 function login() {
@@ -153,17 +153,24 @@ function enterEdit() {
 function selectClass(sheet) {
   selectedSheet = sheet;
   document.getElementById("classPage").style.display = "none";
-  if (mode === "view") document.getElementById("searchPage").style.display = "block";
-  else document.getElementById("editPage").style.display = "block";
+  if (mode === "view") {
+    document.getElementById("searchPage").style.display = "block";
+    loadNames("getNames"); // من الشيت القديم
+  } else {
+    document.getElementById("editPage").style.display = "block";
+    loadNames("getEditNames"); // من الشيت الجديد
+  }
+}
 
-  // تحميل الأسماء
-  fetch(`${API_URL}?action=getNames&sheet=${encodeURIComponent(selectedSheet)}`)
+// تحميل الأسماء
+function loadNames(action) {
+  fetch(`${API_URL}?action=${action}&sheet=${encodeURIComponent(selectedSheet)}`)
     .then(res => res.json())
     .then(data => allNames = data.names || [])
     .catch(err => { console.error("Error loading names:", err); allNames = []; });
 }
 
-// اقتراحات البحث
+// اقتراحات
 function showSuggestions(value, target, inputId) {
   const suggestions = document.getElementById(target);
   suggestions.innerHTML = "";
@@ -201,13 +208,13 @@ function editData() {
   if (!field) return alert("❌ اختر نوع التعديل");
   if (newValue === "") return alert("❌ أدخل القيمة الجديدة");
 
-  fetch(`${API_URL}?action=editData&sheet=${encodeURIComponent(selectedSheet)}&name=${encodeURIComponent(name)}&field=${field.value}&value=${encodeURIComponent(newValue)}`)
+  fetch(`${API_URL}?action=updateData&sheet=${encodeURIComponent(selectedSheet)}&name=${encodeURIComponent(name)}&field=${field.value}&value=${encodeURIComponent(newValue)}`)
     .then(res => res.json())
     .then(data => alert(data.message || "تم التعديل"))
     .catch(err => console.error("Error editing:", err));
 }
 
-// زر الرجوع
+// رجوع
 function goBack() {
   if (document.getElementById("searchPage").style.display === "block" || document.getElementById("editPage").style.display === "block") {
     document.getElementById("searchPage").style.display = "none";
