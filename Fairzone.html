@@ -200,17 +200,30 @@ function search() {
 }
 
 // تعديل
+// تعديل
 function editData() {
   const name = document.getElementById("editName").value;
   const field = document.querySelector("input[name='field']:checked");
   const newValue = document.getElementById("newValue").value;
+
   if (!allNames.includes(name)) return alert("❌ اختر الاسم من الاقتراحات");
   if (!field) return alert("❌ اختر نوع التعديل");
   if (newValue === "") return alert("❌ أدخل القيمة الجديدة");
 
   fetch(`${API_URL}?action=updateData&sheet=${encodeURIComponent(selectedSheet)}&name=${encodeURIComponent(name)}&field=${field.value}&value=${encodeURIComponent(newValue)}`)
     .then(res => res.json())
-    .then(data => alert(data.message || "تم التعديل"))
+    .then(data => {
+      if (data.success) {
+        alert("✅ تم التعديل بنجاح");
+        // تصفير المربعات
+        document.getElementById("editName").value = "";
+        document.getElementById("newValue").value = "";
+        document.getElementById("editSuggestions").innerHTML = "";
+        document.querySelectorAll("input[name='field']").forEach(r => r.checked = false);
+      } else {
+        alert(data.error || "❌ حصل خطأ أثناء التعديل");
+      }
+    })
     .catch(err => console.error("Error editing:", err));
 }
 
