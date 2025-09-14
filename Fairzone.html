@@ -303,9 +303,9 @@ function goBack() {
         // 🧹 تفريغ الاقتراحات
         document.getElementById("suggestions").innerHTML = "";
 
-        // 🧹 تفريغ مربعات النتائج
+        // 🧹 تفريغ كل المربعات (خليها فاضية مش "—")
         ["B", "D", "E", "F"].forEach(id => {
-          document.getElementById(id).textContent = "—";
+          document.getElementById(id).textContent = "";
         });
 
       } else if (result === "NOT_FOUND") {
