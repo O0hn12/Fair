@@ -123,18 +123,41 @@ let mode = "view";
 
 // تسجيل الدخول
 function login() {
-  const u = document.getElementById("username").value;
-  const p = document.getElementById("password").value;
-  if (u === "admin" && p === "123") {
+  const u = document.getElementById("username").value.trim();
+  const p = document.getElementById("password").value.trim();
+
+  // قائمة الأدمنز
+  const admins = [
+    { username: "admin", password: "123" },
+    { username: "admin2", password: "456" }
+  ];
+
+  // قائمة المستخدمين العاديين
+  const users = [
+    { username: "user", password: "123" },
+    { username: "user2", password: "456" },
+    { username: "user3", password: "789" }
+  ];
+
+  // التحقق من الأدمن
+  const isAdmin = admins.find(a => a.username === u && a.password === p);
+  if (isAdmin) {
     document.getElementById("loginPage").style.display = "none";
     document.getElementById("adminChoice").style.display = "block";
-  } else if (u === "user" && p === "123") {
+    return;
+  }
+
+  // التحقق من المستخدم
+  const isUser = users.find(a => a.username === u && a.password === p);
+  if (isUser) {
     mode = "view";
     document.getElementById("loginPage").style.display = "none";
     document.getElementById("classPage").style.display = "block";
-  } else {
-    alert("❌ اسم المستخدم أو كلمة المرور غير صحيحة");
+    return;
   }
+
+  // لو لا أدمن ولا يوزر
+  alert("❌ اسم المستخدم أو كلمة المرور غير صحيحة");
 }
 
 // اختيار وضع الأدمن
