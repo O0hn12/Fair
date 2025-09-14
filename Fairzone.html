@@ -302,10 +302,11 @@ function goBack() {
         document.getElementById("suggestions").innerHTML = "";
 
         // تفريغ النتائج
-        document.getElementById("B").textContent = "—";
-        document.getElementById("D").textContent = "—";
-        document.getElementById("E").textContent = "—";
-        document.getElementById("F").textContent = "—";
+        const resultIds = ["B", "D", "E", "F"];
+  resultIds.forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.textContent = "—"; // يرجع الشرطة زي الأول
+  });
 
       } else if (result === "NOT_FOUND") {
         alert("❌ الاسم غير موجود في الشيت");
