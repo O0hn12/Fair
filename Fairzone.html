@@ -284,25 +284,21 @@ function goBack() {
   }
 }
 
-// 🟢 دالة لتصفير المربعات
+// 🟢 دالة لتفريغ الحقول في searchPage
 function resetFields() {
-  // تصفير مربعات الإدخال
+  // مربع الاسم
   const searchInput = document.getElementById("nameInput");
-  const editInput = document.getElementById("editName");
   if (searchInput) searchInput.value = "";
-  if (editInput) editInput.value = "";
 
-  // تصفير الاقتراحات
+  // الاقتراحات
   const suggestions = document.getElementById("suggestions");
-  const editSuggestions = document.getElementById("editSuggestions");
   if (suggestions) suggestions.innerHTML = "";
-  if (editSuggestions) editSuggestions.innerHTML = "";
 
-  // تصفير نتائج البحث (B, D, E, F)
+  // نتائج البحث (B, D, E, F)
   const resultIds = ["B", "D", "E", "F"];
   resultIds.forEach(id => {
     const el = document.getElementById(id);
-    if (el) el.textContent = "—";
+    if (el) el.textContent = "—"; // يرجع الشرطة زي الأول
   });
 }
 
