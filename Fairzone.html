@@ -291,17 +291,19 @@ function goBack() {
     return;
   }
 
-  fetch(`${scriptURL}?action=markExhibition&sheet=${selectedSheet}&name=${encodeURIComponent(name)}`)
-    .then(res => res.json())
-    .then(data => {
-      if (data.success) {
+  fetch(`${API_URL}?action=markExhibition&sheet=${selectedSheet}&name=${encodeURIComponent(name)}`)
+    .then(res => res.text()) // هنا بترجع Text من السيرفر مش JSON
+    .then(result => {
+      if (result === "OK") {
         alert("✅ تم تسجيل حضور المعرض لهذا الطالب");
         // تفريغ المربع بعد النجاح
         document.getElementById("nameInput").value = "";
         document.getElementById("suggestions").innerHTML = "";
         ["B","D","E","F"].forEach(id => document.getElementById(id).textContent = "—");
+      } else if (result === "NOT_FOUND") {
+        alert("❌ الاسم غير موجود في الشيت");
       } else {
-        alert("❌ " + (data.error || "حدث خطأ غير متوقع"));
+        alert("⚠ حصل خطأ: " + result);
       }
     })
     .catch(err => {
