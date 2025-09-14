@@ -286,16 +286,12 @@ function goBack() {
 
   // دالة عامة لتفريغ المربعات
 function clearFields() {
-  // مربع الاسم
+  console.log("🟢 clearFields called");
   document.getElementById("nameInput").value = "";
-
-  // الاقتراحات
   document.getElementById("suggestions").innerHTML = "";
-
-  // مربعات النتائج
   ["B", "D", "E", "F"].forEach(id => {
     const el = document.getElementById(id);
-    if (el) el.textContent = "—"; // ترجع الشرطة
+    if (el) el.textContent = "—";
   });
 }
 
@@ -310,14 +306,14 @@ function markExhibition() {
   fetch(`${API_URL}?action=markExhibition&sheet=${selectedSheet}&name=${encodeURIComponent(name)}`)
     .then(res => res.text())
     .then(result => {
-      if (result === "OK") {
-        alert("✅ تم تسجيل حضور المعرض لهذا الطالب");
-        clearFields(); // 🟢 نستدعي الدالة هنا
-      } else if (result === "NOT_FOUND") {
-        alert("❌ الاسم غير موجود في الشيت");
-      } else {
-        alert("⚠ حصل خطأ: " + result);
-      }
+      if (result.trim() === "OK") {
+  alert("✅ تم تسجيل حضور المعرض لهذا المغامر");
+  clearFields();
+} else if (result.trim() === "NOT_FOUND") {
+  alert("❌ الاسم غير موجود في الشيت");
+} else {
+  alert("⚠ حصل خطأ: " + result);
+}
     })
     .catch(err => {
       console.error("Error:", err);
