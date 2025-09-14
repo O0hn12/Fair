@@ -284,12 +284,23 @@ function goBack() {
   }
 }
 
-  // دالة عامة لتفريغ المربعات
-function clearFields() {
-  console.log("🟢 clearFields called");
-  document.getElementById("nameInput").value = "";
-  document.getElementById("suggestions").innerHTML = "";
-  ["B", "D", "E", "F"].forEach(id => {
+// 🟢 دالة لتصفير المربعات
+function resetFields() {
+  // تصفير مربعات الإدخال
+  const searchInput = document.getElementById("nameInput");
+  const editInput = document.getElementById("editName");
+  if (searchInput) searchInput.value = "";
+  if (editInput) editInput.value = "";
+
+  // تصفير الاقتراحات
+  const suggestions = document.getElementById("suggestions");
+  const editSuggestions = document.getElementById("editSuggestions");
+  if (suggestions) suggestions.innerHTML = "";
+  if (editSuggestions) editSuggestions.innerHTML = "";
+
+  // تصفير نتائج البحث (B, D, E, F)
+  const resultIds = ["B", "D", "E", "F"];
+  resultIds.forEach(id => {
     const el = document.getElementById(id);
     if (el) el.textContent = "—";
   });
@@ -307,20 +318,19 @@ function markExhibition() {
     .then(res => res.text())
     .then(result => {
       if (result.trim() === "OK") {
-  alert("✅ تم تسجيل حضور المعرض لهذا المغامر");
-  clearFields();
-} else if (result.trim() === "NOT_FOUND") {
-  alert("❌ الاسم غير موجود في الشيت");
-} else {
-  alert("⚠ حصل خطأ: " + result);
-}
+        alert("✅ تم تسجيل حضور المعرض لهذا المغامر");
+        resetFields(); // ← نفس اللي في goBack
+      } else if (result.trim() === "NOT_FOUND") {
+        alert("❌ الاسم غير موجود في الشيت");
+      } else {
+        alert("⚠ حصل خطأ: " + result);
+      }
     })
     .catch(err => {
       console.error("Error:", err);
       alert("❌ حدث خطأ أثناء الاتصال بالخادم");
     });
 }
-
   
 </script>
 </body>
