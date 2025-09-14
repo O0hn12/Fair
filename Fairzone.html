@@ -292,14 +292,20 @@ function goBack() {
   }
 
   fetch(`${API_URL}?action=markExhibition&sheet=${selectedSheet}&name=${encodeURIComponent(name)}`)
-    .then(res => res.text()) // هنا بترجع Text من السيرفر مش JSON
+    .then(res => res.text())
     .then(result => {
       if (result === "OK") {
         alert("✅ تم تسجيل حضور المعرض لهذا الطالب");
-        // تفريغ المربع بعد النجاح
-        document.getElementById("nameInput").value = "";
+
+        // تفريغ كل الحقول النصية
+        document.querySelectorAll("input").forEach(input => input.value = "");
+
+        // تفريغ الاقتراحات
         document.getElementById("suggestions").innerHTML = "";
+
+        // تفريغ الخانات اللي بتعرض البيانات
         ["B","D","E","F"].forEach(id => document.getElementById(id).textContent = "—");
+
       } else if (result === "NOT_FOUND") {
         alert("❌ الاسم غير موجود في الشيت");
       } else {
