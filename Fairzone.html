@@ -297,15 +297,12 @@ function goBack() {
       if (result === "OK") {
         alert("✅ تم تسجيل حضور المعرض لهذا الطالب");
 
-        // 🧹 تفريغ مربع الاسم
+        // 🧹 تفريغ المربعات بعد النجاح
         document.getElementById("nameInput").value = "";
-
-        // 🧹 تفريغ الاقتراحات
         document.getElementById("suggestions").innerHTML = "";
-
-        // 🧹 تفريغ كل المربعات (خليها فاضية مش "—")
-        ["B", "D", "E", "F"].forEach(id => {
-          document.getElementById(id).textContent = "";
+        ["B","D","E","F"].forEach(id => {
+          const el = document.getElementById(id);
+          if (el) el.textContent = ""; // فاضي خالص
         });
 
       } else if (result === "NOT_FOUND") {
