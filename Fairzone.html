@@ -259,11 +259,18 @@ function goBack() {
   if (searchInput) searchInput.value = "";
   if (editInput) editInput.value = "";
 
-  // 🟢 تصفير الاقتراحات كمان
+  // 🟢 تصفير الاقتراحات
   const suggestions = document.getElementById("suggestions");
   const editSuggestions = document.getElementById("editSuggestions");
   if (suggestions) suggestions.innerHTML = "";
   if (editSuggestions) editSuggestions.innerHTML = "";
+
+  // 🟢 تصفير نتائج البحث (B, D, E, F)
+  const resultIds = ["B", "D", "E", "F"];
+  resultIds.forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.textContent = "—"; // يرجع الشرطة زي الأول
+  });
 
   // 🔵 منطق التنقل زي ما هو
   if (document.getElementById("searchPage").style.display === "block" || document.getElementById("editPage").style.display === "block") {
@@ -276,6 +283,7 @@ function goBack() {
     else document.getElementById("loginPage").style.display = "block";
   }
 }
+
   function markExhibition() {
   const name = document.getElementById("nameInput").value.trim();
   if (!name) {
