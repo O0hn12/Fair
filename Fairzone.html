@@ -287,26 +287,27 @@ function goBack() {
   function markExhibition() {
   const name = document.getElementById("nameInput").value.trim();
   if (!name) {
-    alert("⚠️ من فضلك اكتب الاسم أولاً");
+    alert("❌ الرجاء إدخال الاسم أولاً");
     return;
   }
 
-  fetch(`${scriptURL}?action=markExhibition&name=${encodeURIComponent(name)}&sheet=${selectedSheet}`, {
-    method: "POST"
-  })
-  .then(res => res.text())
-  .then(data => {
-    if (data === "OK") {
-      alert("✅ تم تسجيل حضور المعرض بنجاح");
-      document.getElementById("nameInput").value = ""; // تصفير بعد الحفظ
-    } else {
-      alert("❌ لم يتم العثور على الاسم");
-    }
-  })
-  .catch(err => {
-    console.error(err);
-    alert("❌ حصل خطأ أثناء تسجيل الحضور");
-  });
+  fetch(`${scriptURL}?action=markExhibition&sheet=${selectedSheet}&name=${encodeURIComponent(name)}`)
+    .then(res => res.json())
+    .then(data => {
+      if (data.success) {
+        alert("✅ تم تسجيل حضور المعرض لهذا الطالب");
+        // تفريغ المربع بعد النجاح
+        document.getElementById("nameInput").value = "";
+        document.getElementById("suggestions").innerHTML = "";
+        ["B","D","E","F"].forEach(id => document.getElementById(id).textContent = "—");
+      } else {
+        alert("❌ " + (data.error || "حدث خطأ غير متوقع"));
+      }
+    })
+    .catch(err => {
+      console.error("Error:", err);
+      alert("❌ حدث خطأ أثناء الاتصال بالخادم");
+    });
 }
   
 </script>
