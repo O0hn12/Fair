@@ -284,7 +284,23 @@ function goBack() {
   }
 }
 
-  function markExhibition() {
+  // دالة عامة لتفريغ المربعات
+function clearFields() {
+  // مربع الاسم
+  document.getElementById("nameInput").value = "";
+
+  // الاقتراحات
+  document.getElementById("suggestions").innerHTML = "";
+
+  // مربعات النتائج
+  ["B", "D", "E", "F"].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.textContent = "—"; // ترجع الشرطة
+  });
+}
+
+// دالة تسجيل حضور المعرض
+function markExhibition() {
   const name = document.getElementById("nameInput").value.trim();
   if (!name) {
     alert("❌ الرجاء إدخال الاسم أولاً");
@@ -296,16 +312,7 @@ function goBack() {
     .then(result => {
       if (result === "OK") {
         alert("✅ تم تسجيل حضور المعرض لهذا الطالب");
-        
-        // بعد ما يتم الإرسال، نفرغ الحقول
-  document.getElementById("nameInput").value = "";
-
-  // نفرغ مربعات النتائج
-  ["B", "D", "E", "F"].forEach(id => {
-    const el = document.getElementById(id);
-    if (el) el.textContent = "—"; // أو "" لو عايزها تبقى فاضية
-  });
-
+        clearFields(); // 🟢 نستدعي الدالة هنا
       } else if (result === "NOT_FOUND") {
         alert("❌ الاسم غير موجود في الشيت");
       } else {
@@ -317,6 +324,7 @@ function goBack() {
       alert("❌ حدث خطأ أثناء الاتصال بالخادم");
     });
 }
+
   
 </script>
 </body>
