@@ -97,7 +97,8 @@
       <div class="result-row"><span class="label red">الـ Minus</span><div id="E" class="result-item red">—</div></div>
       <div class="result-row"><span class="label green">المجموع</span><div id="F" class="result-item green">—</div></div>
     </div>
-    <button onclick="goBack()">⬅ رجوع</button>
+    <button id="markAttendanceBtn" onclick="markExhibition()">✅ تم حضور المعرض</button>
+    <button id="backBtn" onclick="goBack()">⬅️ رجوع</button>
   </div>
 
   <!-- صفحة التعديل -->
@@ -111,7 +112,8 @@
     </div>
     <input type="number" id="newValue" placeholder="القيمة الجديدة">
     <button onclick="editData()">تعديل</button>
-    <button onclick="goBack()">⬅ رجوع</button>
+    <button id="markAttendanceBtn" onclick="markExhibition()">✅ تم حضور المعرض</button>
+    <button id="backBtn" onclick="goBack()">⬅️ رجوع</button>
   </div>
 </div>
 
@@ -251,6 +253,19 @@ function editData() {
 
 // رجوع
 function goBack() {
+  // 🟢 تصفير مربعات الإدخال
+  const searchInput = document.getElementById("nameInput");
+  const editInput = document.getElementById("editName");
+  if (searchInput) searchInput.value = "";
+  if (editInput) editInput.value = "";
+
+  // 🟢 تصفير الاقتراحات كمان
+  const suggestions = document.getElementById("suggestions");
+  const editSuggestions = document.getElementById("editSuggestions");
+  if (suggestions) suggestions.innerHTML = "";
+  if (editSuggestions) editSuggestions.innerHTML = "";
+
+  // 🔵 منطق التنقل زي ما هو
   if (document.getElementById("searchPage").style.display === "block" || document.getElementById("editPage").style.display === "block") {
     document.getElementById("searchPage").style.display = "none";
     document.getElementById("editPage").style.display = "none";
@@ -261,6 +276,31 @@ function goBack() {
     else document.getElementById("loginPage").style.display = "block";
   }
 }
+  function markExhibition() {
+  const name = document.getElementById("nameInput").value.trim();
+  if (!name) {
+    alert("⚠️ من فضلك اكتب الاسم أولاً");
+    return;
+  }
+
+  fetch(`${scriptURL}?action=markExhibition&name=${encodeURIComponent(name)}&sheet=${selectedSheet}`, {
+    method: "POST"
+  })
+  .then(res => res.text())
+  .then(data => {
+    if (data === "OK") {
+      alert("✅ تم تسجيل حضور المعرض بنجاح");
+      document.getElementById("nameInput").value = ""; // تصفير بعد الحفظ
+    } else {
+      alert("❌ لم يتم العثور على الاسم");
+    }
+  })
+  .catch(err => {
+    console.error(err);
+    alert("❌ حصل خطأ أثناء تسجيل الحضور");
+  });
+}
+  
 </script>
 </body>
 </html>
