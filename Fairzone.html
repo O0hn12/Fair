@@ -297,14 +297,16 @@ function goBack() {
       if (result === "OK") {
         alert("✅ تم تسجيل حضور المعرض لهذا الطالب");
 
-        // تفريغ كل الحقول النصية
-        document.querySelectorAll("input").forEach(input => input.value = "");
+        // 🧹 تفريغ مربع الاسم
+        document.getElementById("nameInput").value = "";
 
-        // تفريغ الاقتراحات
+        // 🧹 تفريغ الاقتراحات
         document.getElementById("suggestions").innerHTML = "";
 
-        // تفريغ الخانات اللي بتعرض البيانات
-        ["B","D","E","F"].forEach(id => document.getElementById(id).textContent = "—");
+        // 🧹 تفريغ مربعات النتائج
+        ["B", "D", "E", "F"].forEach(id => {
+          document.getElementById(id).textContent = "—";
+        });
 
       } else if (result === "NOT_FOUND") {
         alert("❌ الاسم غير موجود في الشيت");
