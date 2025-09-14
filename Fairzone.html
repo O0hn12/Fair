@@ -311,21 +311,21 @@ function markExhibition() {
   }
 
   fetch(`${API_URL}?action=markExhibition&sheet=${selectedSheet}&name=${encodeURIComponent(name)}`)
-    .then(res => res.text())
-    .then(result => {
-      if (result === "OK") {
-        alert("✅ تم تسجيل حضور المعرض لهذا الطالب");
-        resetFields(); // 🟢 هنا هيعمل نفس تفريغ زرار رجوع
-      } else if (result === "NOT_FOUND") {
-        alert("❌ الاسم غير موجود في الشيت");
-      } else {
-        alert("⚠ حصل خطأ: " + result);
-      }
-    })
-    .catch(err => {
-      console.error("Error:", err);
-      alert("❌ حدث خطأ أثناء الاتصال بالخادم");
-    });
+  .then(res => res.json())
+  .then(result => {
+    if (result.success) {
+      alert("✅ تم تسجيل حضور المعرض لهذا الطالب");
+      resetFields();
+    } else if (result.error === "NOT_FOUND") {
+      alert("❌ الاسم غير موجود في الشيت");
+    } else {
+      alert("⚠ حصل خطأ: " + JSON.stringify(result));
+    }
+  })
+  .catch(err => {
+    console.error("Error:", err);
+    alert("❌ حدث خطأ أثناء الاتصال بالخادم");
+  });
 }
   
 </script>
