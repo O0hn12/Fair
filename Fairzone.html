@@ -297,15 +297,13 @@ function goBack() {
       if (result === "OK") {
         alert("✅ تم تسجيل حضور المعرض لهذا الطالب");
         
-        // تفريغ المربعات بعد النجاح
-        document.getElementById("nameInput").value = "";
-        document.getElementById("suggestions").innerHTML = "";
+        // بعد ما يتم الإرسال، نفرغ الحقول
+  document.getElementById("nameInput").value = "";
 
-        // تفريغ النتائج
-        const resultIds = ["B", "D", "E", "F"];
-  resultIds.forEach(id => {
+  // نفرغ مربعات النتائج
+  ["B", "D", "E", "F"].forEach(id => {
     const el = document.getElementById(id);
-    if (el) el.textContent = "—"; // يرجع الشرطة زي الأول
+    if (el) el.textContent = "—"; // أو "" لو عايزها تبقى فاضية
   });
 
       } else if (result === "NOT_FOUND") {
