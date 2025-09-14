@@ -296,14 +296,16 @@ function goBack() {
     .then(result => {
       if (result === "OK") {
         alert("✅ تم تسجيل حضور المعرض لهذا الطالب");
-
-        // 🧹 تفريغ المربعات بعد النجاح
+        
+        // تفريغ المربعات بعد النجاح
         document.getElementById("nameInput").value = "";
         document.getElementById("suggestions").innerHTML = "";
-        ["B","D","E","F"].forEach(id => {
-          const el = document.getElementById(id);
-          if (el) el.textContent = ""; // فاضي خالص
-        });
+
+        // تفريغ النتائج
+        document.getElementById("B").textContent = "—";
+        document.getElementById("D").textContent = "—";
+        document.getElementById("E").textContent = "—";
+        document.getElementById("F").textContent = "—";
 
       } else if (result === "NOT_FOUND") {
         alert("❌ الاسم غير موجود في الشيت");
