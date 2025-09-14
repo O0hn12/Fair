@@ -317,10 +317,10 @@ function markExhibition() {
   fetch(`${API_URL}?action=markExhibition&sheet=${selectedSheet}&name=${encodeURIComponent(name)}`)
     .then(res => res.text())
     .then(result => {
-      if (result.trim() === "OK") {
-        alert("✅ تم تسجيل حضور المعرض لهذا المغامر");
-        resetFields(); // ← نفس اللي في goBack
-      } else if (result.trim() === "NOT_FOUND") {
+      if (result === "OK") {
+        alert("✅ تم تسجيل حضور المعرض لهذا الطالب");
+        resetFields(); // 🟢 هنا هيعمل نفس تفريغ زرار رجوع
+      } else if (result === "NOT_FOUND") {
         alert("❌ الاسم غير موجود في الشيت");
       } else {
         alert("⚠ حصل خطأ: " + result);
